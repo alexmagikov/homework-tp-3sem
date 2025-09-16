@@ -1,0 +1,17 @@
+C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\bin\Debug\net9.0\MatrixMultiplication.exe
+C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\bin\Debug\net9.0\MatrixMultiplication.deps.json
+C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\bin\Debug\net9.0\MatrixMultiplication.runtimeconfig.json
+C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\bin\Debug\net9.0\MatrixMultiplication.dll
+C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\bin\Debug\net9.0\MatrixMultiplication.pdb
+C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\obj\Debug\net9.0\MatrixMultiplication.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\obj\Debug\net9.0\MatrixMultiplication.AssemblyInfoInputs.cache
+C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\obj\Debug\net9.0\MatrixMultiplication.AssemblyInfo.cs
+C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\obj\Debug\net9.0\MatrixMultiplication.csproj.CoreCompileInputs.cache
+C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\obj\Debug\net9.0\MatrixMultiplication.sourcelink.json
+C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\obj\Debug\net9.0\MatrixMultiplication.dll
+C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\obj\Debug\net9.0\refint\MatrixMultiplication.dll
+C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\obj\Debug\net9.0\MatrixMultiplication.pdb
+C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\obj\Debug\net9.0\MatrixMultiplication.genruntimeconfig.cache
+C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\obj\Debug\net9.0\ref\MatrixMultiplication.dll
+C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\bin\Debug\net9.0\MatrixMultiplication.xml
+C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\obj\Debug\net9.0\MatrixMultiplication.xml
