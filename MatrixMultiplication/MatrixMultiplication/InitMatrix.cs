@@ -34,7 +34,7 @@ public class InitMatrix
 
             if (parts.Length != columns)
             {
-                throw new FormatException("Неверное количество элементов");
+                throw new FormatException("Wrong elements number.");
             }
 
             for (int j = 0; j < columns; j++)

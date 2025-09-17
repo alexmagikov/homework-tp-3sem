@@ -17,7 +17,22 @@ try
 {
     var matrix1 = InitMatrix.ReadFile(inputPath1);
     var matrix2 = InitMatrix.ReadFile(inputPath2);
-    var result = 
+
+    var sequentialMultiplier = new SequentialMatrixMultiplication();
+    var parallelMultiplier = new ParallelMatrixMultiplication();
+
+    var resultByParallelMultiplier = parallelMultiplier.Multiply(matrix1, matrix2);
+    var resultBySequentialMultiplier = sequentialMultiplier.Multiply(matrix1, matrix2);
+
+    for (int i = 0; i < resultByParallelMultiplier.GetLength(0); i++)
+    {
+        for (int j = 0; j < resultByParallelMultiplier.GetLength(1); j++)
+        {
+            Console.Write($"{resultByParallelMultiplier[i, j]} ");
+        }
+
+        Console.WriteLine();
+    }
 }
 catch (Exception exception)
 {

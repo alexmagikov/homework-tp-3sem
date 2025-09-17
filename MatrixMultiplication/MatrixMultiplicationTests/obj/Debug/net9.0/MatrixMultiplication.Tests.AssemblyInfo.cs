@@ -11,12 +11,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("MatrixMultiplicationTests")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("MatrixMultiplication.Tests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+92ecc8ad2a3de517f888c1948963c46ba289a5d2")]
-[assembly: System.Reflection.AssemblyProductAttribute("MatrixMultiplicationTests")]
-[assembly: System.Reflection.AssemblyTitleAttribute("MatrixMultiplicationTests")]
+[assembly: System.Reflection.AssemblyProductAttribute("MatrixMultiplication.Tests")]
+[assembly: System.Reflection.AssemblyTitleAttribute("MatrixMultiplication.Tests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Создано классом WriteCodeFragment MSBuild.

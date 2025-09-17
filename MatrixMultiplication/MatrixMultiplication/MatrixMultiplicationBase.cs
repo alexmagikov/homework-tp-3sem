@@ -32,7 +32,7 @@ public abstract class MatrixMultiplicationBase
         int columnIndex)
     {
         int sum = 0;
-        for (int i = 0; i < rowIndex; i++)
+        for (int i = 0; i < matrix1.GetLength(1); i++)
         {
             sum += matrix1[rowIndex, i] * matrix2[i, columnIndex];
         }
@@ -54,5 +54,14 @@ public abstract class MatrixMultiplicationBase
         {
             throw new FormatException("Dimensions of the matrices don't match");
         }
+    }
+
+    /// <summary>
+    /// Write result matrix to file.
+    /// </summary>
+    /// <param name="resultMatrix">ResultMatrix.</param>
+    public static void WriteResultMatrix(int[,] resultMatrix)
+    {
+
     }
 }

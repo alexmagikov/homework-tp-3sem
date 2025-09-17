@@ -876,9 +876,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\User\\source\\repos\\homework-tp-3sem\\MatrixMultiplication\\MatrixMultiplicationTests\\MatrixMultiplicationTests.csproj",
-      "projectName": "MatrixMultiplicationTests",
-      "projectPath": "C:\\Users\\User\\source\\repos\\homework-tp-3sem\\MatrixMultiplication\\MatrixMultiplicationTests\\MatrixMultiplicationTests.csproj",
+      "projectUniqueName": "C:\\Users\\User\\source\\repos\\homework-tp-3sem\\MatrixMultiplication\\MatrixMultiplicationTests\\MatrixMultiplication.Tests.csproj",
+      "projectName": "MatrixMultiplication.Tests",
+      "projectPath": "C:\\Users\\User\\source\\repos\\homework-tp-3sem\\MatrixMultiplication\\MatrixMultiplicationTests\\MatrixMultiplication.Tests.csproj",
       "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
       "outputPath": "C:\\Users\\User\\source\\repos\\homework-tp-3sem\\MatrixMultiplication\\MatrixMultiplicationTests\\obj\\",
       "projectStyle": "PackageReference",

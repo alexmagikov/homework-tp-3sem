@@ -7,7 +7,7 @@ namespace MatrixMultiplication;
 /// <summary>
 /// Parallel matrix multiplication.
 /// </summary>
-internal class ParallelMatrixMultiplication : MatrixMultiplicationBase
+public class ParallelMatrixMultiplication : MatrixMultiplicationBase
 {
     /// <summary>
     /// Parallel matrix multiplication.
@@ -23,10 +23,10 @@ internal class ParallelMatrixMultiplication : MatrixMultiplicationBase
         var columnsNum = matrix2.GetLength(1);
         var resultMatrix = new int[rowsNum, columnsNum];
 
-        int threadsNum = Environment.ProcessorCount;
+        int threadsNum = Math.Min(Environment.ProcessorCount, rowsNum);
         Thread[] threads = new Thread[threadsNum];
 
-        int rowsForThread = rowsNum / threadsNum;
+        int rowsForThread = (int)Math.Ceiling((double)rowsNum / threadsNum);
 
         for (int i = 0; i < threadsNum; i++)
         {
