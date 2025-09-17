@@ -427,5 +427,5 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
-# Visual Studio files
+# Visual Studio cache/options directory
 .vs/
