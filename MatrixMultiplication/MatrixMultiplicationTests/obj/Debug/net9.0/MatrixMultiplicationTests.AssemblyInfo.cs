@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("MatrixMultiplicationTests")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b5ba9763ff423219316db315a2d9b51ccbb92544")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+24e551939a72b7a943ad88e080c160ddadee3b17")]
 [assembly: System.Reflection.AssemblyProductAttribute("MatrixMultiplicationTests")]
 [assembly: System.Reflection.AssemblyTitleAttribute("MatrixMultiplicationTests")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

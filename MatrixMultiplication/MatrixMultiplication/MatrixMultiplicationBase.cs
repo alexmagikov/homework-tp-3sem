@@ -22,19 +22,19 @@ public abstract class MatrixMultiplicationBase
     /// </summary>
     /// <param name="matrix1">Matrix1.</param>
     /// <param name="matrix2">Matrix2.</param>
-    /// <param name="rowsNum">String number.</param>
-    /// <param name="columnsNum">Column number.</param>
+    /// <param name="rowIndex">String number.</param>
+    /// <param name="columnIndex">Column number.</param>
     /// <returns>Element of result matrix of Multiplication.</returns>
-    protected int CalculateResultMatrixElement(
+    protected static int CalculateResultMatrixElement(
         int[,] matrix1,
         int[,] matrix2,
-        int rowsNum,
-        int columnsNum)
+        int rowIndex,
+        int columnIndex)
     {
         int sum = 0;
-        for (int i = 0; i < rowsNum; i++)
+        for (int i = 0; i < rowIndex; i++)
         {
-            sum += matrix1[rowsNum, i] * matrix2[i, columnsNum];
+            sum += matrix1[rowIndex, i] * matrix2[i, columnIndex];
         }
 
         return sum;
@@ -45,23 +45,12 @@ public abstract class MatrixMultiplicationBase
     /// </summary>
     /// <param name="matrix1">Matrix1.</param>
     /// <param name="matrix2">Matrix2</param>
-    /// <returns>Yes if dimensions are matching, else - false.</returns>
-    protected  CheckDimensions(int[,] matrix1, int[,] matrix2)
+    protected static void CheckDimensions(int[,] matrix1, int[,] matrix2)
     {
-        var matrix1NumStrings = matrix1.GetLength(0);
         var matrix1NumColumns = matrix1.GetLength(1);
         var matrix2NumStrings = matrix2.GetLength(0);
-        var matrix2NumColumns = matrix2.GetLength(1);
 
-        if ((matrix1NumColumns != matrix2NumStrings) || (matrix1NumStrings == matrix2NumColumns))
-        {
-            result = Multiply(matrix1, matrix2, matrix1NumStrings, matrix2NumColumns);
-        }
-        else if (matrix1NumStrings == matrix2NumColumns)
-        {
-            result = Multiply(matrix2, matrix1, matrix2NumColumns, matrix1NumStrings);
-        }
-        else
+        if (matrix1NumColumns != matrix2NumStrings)
         {
             throw new FormatException("Dimensions of the matrices don't match");
         }
