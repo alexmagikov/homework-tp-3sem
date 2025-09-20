@@ -16,6 +16,12 @@
     <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
 
+	<ItemGroup>
+		<Compile Include="MatrixBenchmark.cs" />
+		<Compile Include="ParallelMatrixMultiplier.cs" />
+		<Compile Include="SequentialMatrixMultiplier.cs" />
+	</ItemGroup>
+	
   <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
       <PrivateAssets>all</PrivateAssets>
