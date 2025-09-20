@@ -2,6 +2,7 @@
 // Copyright (c) AlexMagikov. All rights reserved.
 // </copyright>
 
+using System.Diagnostics;
 using MatrixMultiplication;
 
 if (args.Length < 2)
@@ -18,21 +19,40 @@ try
     var matrix1 = InitMatrix.ReadFile(inputPath1);
     var matrix2 = InitMatrix.ReadFile(inputPath2);
 
-    var sequentialMultiplier = new SequentialMatrixMultiplication();
-    var parallelMultiplier = new ParallelMatrixMultiplication();
+    var sequentialMultiplier = new SequentialMatrixMultiplier();
+    var parallelMultiplier = new ParallelMatrixMultiplier();
 
-    var resultByParallelMultiplier = parallelMultiplier.Multiply(matrix1, matrix2);
-    var resultBySequentialMultiplier = sequentialMultiplier.Multiply(matrix1, matrix2);
+    int iterations = 1000;
+    long parallelTotalTime = 0;
+    long sequentialTotalTime = 0;
 
-    for (int i = 0; i < resultByParallelMultiplier.GetLength(0); i++)
+    var resultMatrix = parallelMultiplier.Multiply(matrix1, matrix2);
+
+    for (int i = 0; i < iterations; i++)
     {
-        for (int j = 0; j < resultByParallelMultiplier.GetLength(1); j++)
-        {
-            Console.Write($"{resultByParallelMultiplier[i, j]} ");
-        }
+        var sw = Stopwatch.StartNew();
+        parallelMultiplier.Multiply(matrix1, matrix2);
+        sw.Stop();
+        parallelTotalTime += sw.ElapsedMilliseconds;
 
-        Console.WriteLine();
+        sw.Restart();
+        sequentialMultiplier.Multiply(matrix1, matrix2);
+        sw.Stop();
+        sequentialTotalTime += sw.ElapsedMilliseconds;
     }
+
+    double parallelAvg = (double)parallelTotalTime / iterations;
+    double sequentialAvg = (double)sequentialTotalTime / iterations;
+
+    Console.WriteLine($"Avg time parallel multiplication: {parallelAvg:F3} мс");
+    Console.WriteLine($"Avg time sequential multiplication: {sequentialAvg:F3} мс");
+
+    MatrixBenchmark.WriteFile(resultMatrix);
+    Console.WriteLine("Result has written to file with name 'resultMatrix.txt' ");
+
+    Console.WriteLine();
+    Console.WriteLine("Results of benchmark: ");
+    MatrixBenchmark.RunBenchmark();
 }
 catch (Exception exception)
 {
