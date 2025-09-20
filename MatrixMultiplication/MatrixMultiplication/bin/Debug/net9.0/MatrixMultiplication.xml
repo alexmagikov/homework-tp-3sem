@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MatrixMultiplication</name>
+    </assembly>
+    <members>
+        <member name="T:MatrixMultiplication.InitMatrix">
+            <summary>
+            Class for working with files with matrix.
+            </summary>
+        </member>
+        <member name="M:MatrixMultiplication.InitMatrix.ReadFile(System.String)">
+            <summary>
+            Read matrix from file.
+            </summary>
+            <param name="path">Path of the file.</param>
+            <returns>Matrix.</returns>
+        </member>
+        <member name="T:MatrixMultiplication.MatrixBenchmark">
+            <summary>
+            Class for benchmarking.
+            </summary>
+        </member>
+        <member name="M:MatrixMultiplication.MatrixBenchmark.RunBenchmark">
+            <summary>
+            Benchmarking.
+            </summary>
+        </member>
+        <member name="M:MatrixMultiplication.MatrixBenchmark.CreateMatrix(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Create matrix by parameters.
+            </summary>
+            <param name="rowsNum">Number of rows.</param>
+            <param name="columnsNum">Number of columns.</param>
+            <param name="minNum">Min border of value.</param>
+            <param name="maxNum">Max border of value.</param>
+            <exception cref="T:System.ArgumentException">Argument exception.</exception>
+            <returns>Matrix.</returns>
+        </member>
+        <member name="M:MatrixMultiplication.MatrixBenchmark.WriteFile(System.Int32[0:,0:])">
+            <summary>
+            Write resultMatrix to file.
+            </summary>
+            <param name="matrix">ResultMatrix.</param>
+        </member>
+        <member name="M:MatrixMultiplication.MatrixBenchmark.AreMatricesEqual(System.Int32[0:,0:],System.Int32[0:,0:])">
+            <summary>
+            Checking for equality of matrices.
+            </summary>
+            <param name="matrix1">Matrix1.</param>
+            <param name="matrix2">Matrix2.</param>
+            <returns>True if they are equal, else - false.</returns>
+        </member>
+        <member name="T:MatrixMultiplication.MatrixMultiplierBase">
+            <summary>
+            Abstract class for solution of Sequential and Parallel Multiplication.
+            </summary>
+        </member>
+        <member name="M:MatrixMultiplication.MatrixMultiplierBase.Multiply(System.Int32[0:,0:],System.Int32[0:,0:])">
+            <summary>
+            Multiplication of 2 matrices.
+            </summary>
+            <param name="matrix1">Matrix1.</param>
+            <param name="matrix2">Matrix2.</param>
+            <returns>Result matrix of multiplication.</returns>
+        </member>
+        <member name="M:MatrixMultiplication.MatrixMultiplierBase.CalculateResultMatrixElement(System.Int32[0:,0:],System.Int32[0:,0:],System.Int32,System.Int32)">
+            <summary>
+            Calculate matrix element by indexes.
+            </summary>
+            <param name="matrix1">Matrix1.</param>
+            <param name="matrix2">Matrix2.</param>
+            <param name="rowIndex">String number.</param>
+            <param name="columnIndex">Column number.</param>
+            <returns>Element of result matrix of Multiplication.</returns>
+        </member>
+        <member name="M:MatrixMultiplication.MatrixMultiplierBase.CheckDimensions(System.Int32[0:,0:],System.Int32[0:,0:])">
+            <summary>
+            Check dimensions matching.
+            </summary>
+            <param name="matrix1">Matrix1.</param>
+            <param name="matrix2">Matrix2.</param>
+        </member>
+        <member name="T:MatrixMultiplication.ParallelMatrixMultiplier">
+            <summary>
+            Parallel matrix multiplication.
+            </summary>
+        </member>
+        <member name="M:MatrixMultiplication.ParallelMatrixMultiplier.Multiply(System.Int32[0:,0:],System.Int32[0:,0:])">
+            <summary>
+            Parallel matrix multiplication.
+            </summary>
+            <param name="matrix1">Matrix1.</param>
+            <param name="matrix2">Matrix2.</param>
+            <returns>ResultMatrix.</returns>
+        </member>
+        <member name="T:MatrixMultiplication.SequentialMatrixMultiplier">
+            <summary>
+            Matrix sequential multiplication.
+            </summary>
+        </member>
+        <member name="M:MatrixMultiplication.SequentialMatrixMultiplier.Multiply(System.Int32[0:,0:],System.Int32[0:,0:])">
+            <summary>
+            Initializes a new instance of the <see cref="T:MatrixMultiplication.SequentialMatrixMultiplier"/> class.
+            </summary>
+            <param name="matrix1">Matrix1.</param>
+            <param name="matrix2">Matrix2.</param>
+            <returns>Result matrix.</returns>
+        </member>
+    </members>
+</doc>

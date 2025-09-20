@@ -23,12 +23,12 @@
     </PackageReference>
   </ItemGroup>
 
-	<ItemGroup>
-		<EditorConfigFiles Remove=".editorconfig" />
-	</ItemGroup>
+  <ItemGroup>
+    <EditorConfigFiles Remove="C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\.editorconfig" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<None Include=".editorconfig" />
-	</ItemGroup>
+  <ItemGroup>
+    <None Include="C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\.editorconfig" />
+  </ItemGroup>
 
 </Project>
