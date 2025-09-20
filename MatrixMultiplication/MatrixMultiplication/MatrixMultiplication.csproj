@@ -15,12 +15,6 @@
   <ItemGroup>
     <AdditionalFiles Include="stylecop.json" />
   </ItemGroup>
-
-	<ItemGroup>
-		<Compile Include="MatrixBenchmark.cs" />
-		<Compile Include="ParallelMatrixMultiplier.cs" />
-		<Compile Include="SequentialMatrixMultiplier.cs" />
-	</ItemGroup>
 	
   <ItemGroup>
     <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
@@ -29,12 +23,12 @@
     </PackageReference>
   </ItemGroup>
 
-  <ItemGroup>
-    <EditorConfigFiles Remove="C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\.editorconfig" />
-  </ItemGroup>
+	<ItemGroup>
+		<EditorConfigFiles Remove=".editorconfig" />
+	</ItemGroup>
 
-  <ItemGroup>
-    <None Include="C:\Users\User\source\repos\homework-tp-3sem\MatrixMultiplication\MatrixMultiplication\.editorconfig" />
-  </ItemGroup>
+	<ItemGroup>
+		<None Include=".editorconfig" />
+	</ItemGroup>
 
 </Project>
