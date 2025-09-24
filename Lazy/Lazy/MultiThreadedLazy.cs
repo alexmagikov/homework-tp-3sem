@@ -29,11 +29,11 @@ public class MultiThreadedLazy<T>(Func<T> supplier) : ILazy<T>
         {
             lock (this.lockObject)
             {
-                if (this.isInitialized)
+                if (!this.isInitialized)
                 {
                     if (this.supplier == null)
                     {
-                        throw new NullReferenceException("Supplier is null");
+                        throw new ArgumentNullException("Supplier is null");
                     }
 
                     this.value = this.supplier();

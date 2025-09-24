@@ -1,4 +1,4 @@
-﻿// <copyright file="ILazy.cs" company="AlexanderKuchin">
+﻿// <copyright file="SingleThreadedLazy.cs" company="AlexanderKuchin">
 // Copyright (c) AlexanderKuchin. All rights reserved.
 // </copyright>
 
@@ -7,7 +7,7 @@ namespace Lazy;
 /// <summary>
 /// Lazy calculation with 1 thread.
 /// </summary>
-/// <typeparam name="T"></typeparam>
+/// <typeparam name="T">Type value.</typeparam>
 public class SingleThreadedLazy<T>(Func<T> supplier) : ILazy<T>
 {
     private bool isInitialized;
@@ -19,7 +19,7 @@ public class SingleThreadedLazy<T>(Func<T> supplier) : ILazy<T>
     /// <summary>
     /// Get method.
     /// </summary>
-    /// <returns>T type.</returns>
+    /// <returns>Type value.</returns>
     /// <exception cref="NullReferenceException">Null exception.</exception>
     public T? Get()
     {
@@ -27,8 +27,9 @@ public class SingleThreadedLazy<T>(Func<T> supplier) : ILazy<T>
         {
             if (this.supplier == null)
             {
-                throw new NullReferenceException("Supplier is null");
+                throw new ArgumentNullException("Supplier is null");
             }
+            
             this.value = this.supplier();
             this.isInitialized = true;
             this.supplier = null;
