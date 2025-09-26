@@ -13,7 +13,7 @@ public class MultiThreadedLazy<T>(Func<T> supplier) : ILazy<T>
 {
     private readonly object lockObject = new();
 
-    private bool isInitialized;
+    private volatile bool isInitialized;
 
     private Func<T>? supplier = supplier ?? throw new ArgumentNullException(nameof(supplier));
 
@@ -31,11 +31,6 @@ public class MultiThreadedLazy<T>(Func<T> supplier) : ILazy<T>
             {
                 if (!this.isInitialized)
                 {
-                    if (this.supplier == null)
-                    {
-                        throw new ArgumentNullException("Supplier is null");
-                    }
-
                     this.value = this.supplier();
                     this.isInitialized = true;
                     this.supplier = null;
@@ -44,5 +39,5 @@ public class MultiThreadedLazy<T>(Func<T> supplier) : ILazy<T>
         }
 
         return this.value;
-    }
+    }   
 }

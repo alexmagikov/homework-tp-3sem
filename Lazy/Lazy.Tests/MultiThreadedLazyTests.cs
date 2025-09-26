@@ -14,23 +14,34 @@ public class MultiThreadedLazyTests
         {
             Interlocked.Increment(ref counter);
             Thread.Sleep(50);
-            return counter;
+            return counter + 1;
         });
 
-        var numThreades = 10;
-        var threads = new Thread[numThreades];
+        var numThreads = 10;
+        var threads = new Thread[numThreads];
+        var results = new int[numThreads];
 
-        for (int i = 0; i < numThreades; i++)
+        var barrier = new Barrier(numThreads);
+
+        for (var i = 0; i < numThreads; i++)
         {
-            threads[i] = new Thread(() => lazyMulti.Get());
+            var localIndex = i;
+            threads[i] = new Thread(() =>
+            {
+                barrier.SignalAndWait();
+                results[localIndex] = lazyMulti.Get();
+            });
             threads[i].Start();
         }
 
-        for (int i = 0; i < numThreades; i++)
+        for (var i = 0; i < numThreads; i++)
         {
             threads[i].Join();
         }
 
-        Assert.That(counter, Is.EqualTo(1));
+        for (int i = 0; i < numThreads; i++)
+        {
+            Assert.That(results[i], Is.EqualTo(2));
+        }
     }
 }

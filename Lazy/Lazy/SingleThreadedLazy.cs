@@ -25,16 +25,11 @@ public class SingleThreadedLazy<T>(Func<T> supplier) : ILazy<T>
     {
         if (!this.isInitialized)
         {
-            if (this.supplier == null)
-            {
-                throw new ArgumentNullException("Supplier is null");
-            }
-            
             this.value = this.supplier();
             this.isInitialized = true;
             this.supplier = null;
         }
-        
+
         return this.value;
     }
 }
