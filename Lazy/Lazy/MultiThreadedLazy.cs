@@ -39,5 +39,5 @@ public class MultiThreadedLazy<T>(Func<T> supplier) : ILazy<T>
         }
 
         return this.value;
-    }   
+    }
 }
