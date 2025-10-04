@@ -188,9 +188,9 @@ public class MyThreadPool
             }
         }
 
-        public IMyTask<TNewResult> ContinueWith<TNewResult>(Func<TResult, TNewResult> continuation)
+        public IMyTask<TNewResult?> ContinueWith<TNewResult>(Func<TResult?, TNewResult?> continuation)
         {
-            var newTask = new MyTask<TNewResult>(() => continuation(this.Result), inputThreadPool);
+            var newTask = new MyTask<TNewResult?>(() => continuation(this.Result), inputThreadPool);
 
             lock (this.lockObject)
             {
