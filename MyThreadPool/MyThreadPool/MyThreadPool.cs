@@ -68,20 +68,20 @@ public class MyThreadPool
     /// <returns>Task.</returns>
     public IMyTask<TResult> Submit<TResult>(Func<TResult> inputFunc)
     {
-        if (this.cts.IsCancellationRequested)
-        {
-            throw new InvalidOperationException("Already shutdown");
-        }
-
-        var task = new MyTask<TResult>(inputFunc, this);
-
         lock (this.lockObject)
         {
+            if (this.cts.IsCancellationRequested)
+            {
+                throw new InvalidOperationException("Already shutdown");
+            }
+
+            var task = new MyTask<TResult>(inputFunc, this);
+
             this.taskQueue.Enqueue(() => task.Execute());
             Monitor.Pulse(this.lockObject);
-        }
 
-        return task;
+            return task;
+        }
     }
 
     /// <summary>
@@ -119,7 +119,7 @@ public class MyThreadPool
     {
         private readonly object lockObject = new();
 
-        private readonly List<Action> continuations = new();
+        private readonly List<(Action Continuation, Action<Exception> SetException)> continuations = new();
 
         private Exception? exception;
 
@@ -138,7 +138,7 @@ public class MyThreadPool
             }
         }
 
-        public TResult? Result
+        public TResult Result
         {
             get
             {
@@ -154,6 +154,11 @@ public class MyThreadPool
                         throw new AggregateException(this.exception);
                     }
 
+                    if (this.result == null)
+                    {
+                        throw new InvalidOperationException("No result");
+                    }
+
                     return this.result;
                 }
             }
@@ -161,46 +166,78 @@ public class MyThreadPool
 
         public void Execute()
         {
+            TResult? localResult = default;
+            Exception? localException = null;
+
             try
             {
-                this.result = inputFunc();
-                lock (this.lockObject)
-                {
-                    this.isCompleted = true;
-
-                    foreach (var continuation in this.continuations)
-                    {
-                        inputThreadPool.EnqueueTask(continuation);
-                    }
-
-                    this.continuations.Clear();
-                    Monitor.PulseAll(this.lockObject);
-                }
+                localResult = inputFunc();
             }
             catch (Exception inputException)
             {
-                lock (this.lockObject)
+                localException = inputException;
+            }
+
+            lock (this.lockObject)
+            {
+                this.result = localResult;
+                this.exception = localException;
+                this.isCompleted = true;
+
+                foreach (var (continuation, setException) in this.continuations)
                 {
-                    this.exception = inputException;
-                    this.isCompleted = true;
-                    Monitor.PulseAll(this.lockObject);
+                    try
+                    {
+                        inputThreadPool.EnqueueTask(continuation);
+                    }
+                    catch (InvalidOperationException inputException)
+                    {
+                        setException(inputException);
+                    }
                 }
+
+                this.continuations.Clear();
+
+                Monitor.PulseAll(this.lockObject);
             }
         }
 
-        public IMyTask<TNewResult?> ContinueWith<TNewResult>(Func<TResult?, TNewResult?> continuation)
+        public IMyTask<TNewResult> ContinueWith<TNewResult>(Func<TResult, TNewResult> continuation)
         {
-            var newTask = new MyTask<TNewResult?>(() => continuation(this.Result), inputThreadPool);
+            var newTask = new MyTask<TNewResult>(
+                () =>
+            {
+                var computingResult = this.Result;
+                return continuation(computingResult);
+            },
+                inputThreadPool);
+
+            void SetException(Exception inputException)
+            {
+                lock (newTask.lockObject)
+                {
+                    newTask.exception = inputException;
+                    newTask.isCompleted = true;
+                    Monitor.PulseAll(newTask.lockObject);
+                }
+            }
 
             lock (this.lockObject)
             {
                 if (this.isCompleted)
                 {
-                    inputThreadPool.EnqueueTask(() => newTask.Execute());
+                    try
+                    {
+                        inputThreadPool.EnqueueTask(() => newTask.Execute());
+                    }
+                    catch (Exception inputException)
+                    {
+                        SetException(inputException);
+                    }
                 }
                 else
                 {
-                    this.continuations.Add(() => newTask.Execute());
+                    this.continuations.Add((() => newTask.Execute(), SetException));
                 }
             }
 

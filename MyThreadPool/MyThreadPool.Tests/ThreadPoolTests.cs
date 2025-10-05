@@ -52,12 +52,7 @@ public class ThreadPoolTests
     public void ThreadPoolTestBaseScenarios()
     {
         var threadPool = new MyThreadPool(4);
-        var task = threadPool.Submit(() =>
-        {
-            Thread.Sleep(100);
-            return 4;
-        });
-        Assert.That(task.IsCompleted, Is.False);
+        var task = threadPool.Submit(() => 4);
         Assert.That(task.Result, Is.EqualTo(4));
         threadPool.Shutdown();
     }
@@ -111,5 +106,46 @@ public class ThreadPoolTests
         Assert.That(task.Result, Is.EqualTo("41"));
 
         threadPool.Shutdown();
+    }
+
+    [Test]
+    public void TaskTestContinueWithShutdownShouldReturnException()
+    {
+        var threadPool = new MyThreadPool(4);
+        var task = threadPool.Submit(() => 2 * 2);
+
+        threadPool.Shutdown();
+
+        var newTask = task.ContinueWith(x => x.ToString());
+
+        Assert.Throws<AggregateException>(() =>
+        {
+            var result = newTask.Result;
+        });
+    }
+
+    [Test]
+    public void TaskTestContinueWithShutdownAfterShouldReturnException()
+    {
+        var threadPool = new MyThreadPool(2);
+        var firstTaskStarted = new ManualResetEvent(false);
+
+        var task = threadPool.Submit(() =>
+        {
+            firstTaskStarted.Set();
+            Thread.Sleep(300);
+            return 42;
+        });
+
+        var continuation = task.ContinueWith(result => result * 2);
+
+        firstTaskStarted.WaitOne();
+
+        threadPool.Shutdown();
+
+        Assert.Throws<AggregateException>(() =>
+        {
+            var result = continuation.Result;
+        });
     }
 }

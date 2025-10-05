@@ -18,7 +18,7 @@ public interface IMyTask<TResult>
     /// <summary>
     /// Gets result of task.
     /// </summary>
-    TResult? Result { get; }
+    TResult Result { get; }
 
     /// <summary>
     /// Add new task to execute if general task is completed.
@@ -26,5 +26,5 @@ public interface IMyTask<TResult>
     /// <param name="continuation">Continuation func.</param>
     /// <typeparam name="TNewResult">Result of task.</typeparam>
     /// <returns>Result task.</returns>
-    IMyTask<TNewResult?> ContinueWith<TNewResult>(Func<TResult?, TNewResult?> continuation);
+    IMyTask<TNewResult> ContinueWith<TNewResult>(Func<TResult, TNewResult> continuation);
 }
