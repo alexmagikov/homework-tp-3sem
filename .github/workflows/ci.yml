@@ -33,3 +33,5 @@ jobs:
       - name: Run tests
         shell: cmd
         run: For /R %%I in (*.sln) do dotnet test %%I
+
+        
