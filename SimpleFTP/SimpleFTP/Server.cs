@@ -2,76 +2,133 @@
 // Copyright (c) AlexanderKuchin. All rights reserved.
 // </copyright>
 
-using System.Text;
-
 namespace SimpleFTP;
 
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
-public class Server(int port)
+/// <summary>
+/// Accept request to get list of files and directories by relative path.
+/// </summary>
+/// <param name="port">Port of connection.</param>
+public class Server(int port) : IDisposable
 {
+    private readonly TcpListener listener = new(IPAddress.Any, port);
+    private readonly CancellationTokenSource cts = new();
+
+    /// <summary>
+    /// Start listening of channel.
+    /// </summary>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     public async Task StartAsync()
     {
-        var listener = new TcpListener(IPAddress.Any, port);
-        listener.Start();
-        Console.WriteLine($"Listening on port {port}");
-
-        while (true)
+        try
         {
-            var socket = await listener.AcceptSocketAsync();
+            this.listener.Start();
+            Console.WriteLine($"{DateTime.Now:HH:mm:ss}>>>Server>>>Listening on port {port}");
 
-            Task.Run(
-                async () =>
+            while (!this.cts.IsCancellationRequested)
             {
-                await using var stream = new NetworkStream(socket);
-                using var reader = new StreamReader(stream);
-                var data = await reader.ReadLineAsync();
-                await using var writer = new StreamWriter(stream);
+                var socket = await this.listener.AcceptSocketAsync();
 
-                try
-                {
-                    var path = Path.Combine(Directory.GetCurrentDirectory(), data.Split(' ')[1]);
-
-                    switch (data[0])
+                _ = Task.Run(
+                    async () =>
                     {
-                        case '1':
-                            await writer.WriteLineAsync(this.ListRequestHandler(path));
-                            await writer.FlushAsync();
-                            break;
-                        case '2':
-                            var (size, fileBytes) = await GetRequestHandler(path);
-                            Console.WriteLine(size);
-                            var sizeBytes = BitConverter.GetBytes(size);
+                        var stream = new NetworkStream(socket, true);
+                        await using var safeStream = Stream.Synchronized(stream);
 
-                            await stream.WriteAsync(sizeBytes);
-                            await stream.WriteAsync(fileBytes);
-                            await stream.FlushAsync();
-                            break;
-                    }
-                }
-                catch(Exception exception)
-                {
-                    switch (data[0])
-                    {
-                        case '1':
-                            await writer.WriteLineAsync($"-1 {exception.Message}");
-                            await writer.FlushAsync();
-                            break;
-                        case '2':
-                            await stream.WriteAsync(BitConverter.GetBytes((long)-1));
-                            await stream.WriteAsync(Encoding.UTF8.GetBytes(exception.Message));
-                            await writer.FlushAsync();
-                            break;
-                    }
-                }
+                        using var reader = new StreamReader(safeStream);
+                        await using var writer = new StreamWriter(safeStream);
+                        writer.AutoFlush = true;
 
-                socket.Close();
-            });
+                        Console.WriteLine($"{DateTime.Now:HH:mm:ss}>>>Server>>>Server is sending data");
+
+                        while (!this.cts.IsCancellationRequested)
+                        {
+                            var data = await reader.ReadLineAsync();
+                            if (data == null)
+                            {
+                                break;
+                            }
+
+                            try
+                            {
+                                var path = Path.Combine(Directory.GetCurrentDirectory(), data.Split(' ')[1]);
+                                Console.WriteLine(path);
+                                switch (data[0])
+                                {
+                                    case '1':
+                                        await this.ListRequestHandler(path, writer);
+                                        break;
+                                    case '2':
+                                        await this.GetRequestHandler(path, safeStream);
+                                        break;
+                                }
+                            }
+                            catch (Exception exception)
+                            {
+                                switch (data[0])
+                                {
+                                    case '1':
+                                        await writer.WriteLineAsync($"-1 {exception.Message}");
+                                        break;
+                                    case '2':
+                                        await safeStream.WriteAsync(BitConverter.GetBytes(-1L));
+                                        await writer.WriteLineAsync(exception.Message);
+                                        break;
+                                }
+
+                                await writer.FlushAsync();
+                            }
+                        }
+                    });
+            }
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine($"{DateTime.Now:HH:mm:ss}>>>Server>>>Server error: {exception.Message}");
+            this.Dispose();
         }
     }
 
-    private string ListRequestHandler(string path)
+    public void Dispose()
+    {
+        this.listener.Stop();
+        this.listener.Dispose();
+        this.cts.Cancel();
+    }
+
+    private async Task GetRequestHandler(string path, Stream stream)
+    {
+        if (!File.Exists(path))
+        {
+            throw new ArgumentException("Invalid path");
+        }
+
+        var fileInfo = new FileInfo(path);
+        long size = fileInfo.Length;
+
+        var sizeBytes = BitConverter.GetBytes(size);
+
+        await stream.WriteAsync(sizeBytes);
+
+        const int bufferSize = 8192;
+        var buffer = new byte[bufferSize];
+
+        await using var fileStream = File.OpenRead(path);
+        int bytesRead;
+        while ((bytesRead = await fileStream.ReadAsync(buffer)) > 0)
+        {
+            await stream.WriteAsync(buffer.AsMemory(0, bytesRead));
+        }
+
+        await stream.FlushAsync();
+
+        Console.WriteLine($"{DateTime.Now:HH:mm:ss}>>>Server>>>File sent: {path}, size: {size} bytes");
+    }
+
+    private async Task ListRequestHandler(string path, StreamWriter writer)
     {
         if (!Directory.Exists(path))
         {
@@ -85,24 +142,18 @@ public class Server(int port)
         var result = new StringBuilder();
 
         foreach (var dir in directories)
-            result.Append($"{Path.GetFileName(dir)} true ");
-
-        foreach (var file in files)
-            result.Append($"{Path.GetFileName(file)} false ");
-
-        return $"{directories.Length + files.Length} {result}";
-    }
-
-    private async Task<(long, byte[])> GetRequestHandler(string path)
-    {
-        if (!File.Exists(path))
         {
-            throw new ArgumentException("Invalid path");
+            result.Append($"{Path.GetFileName(dir)} true ");
         }
 
-        var fileBytes = await File.ReadAllBytesAsync(path);
-        long size = fileBytes.Length;
+        foreach (var file in files)
+        {
+            result.Append($"{Path.GetFileName(file)} false ");
+        }
 
-        return (size, fileBytes);
+        await writer.WriteLineAsync($"{directories.Length + files.Length} {result}");
+        await writer.FlushAsync();
+
+        Console.WriteLine($"{DateTime.Now:HH:mm:ss}>>>Server>>>List sent: {path}, items: {directories.Length + files.Length}");
     }
 }
