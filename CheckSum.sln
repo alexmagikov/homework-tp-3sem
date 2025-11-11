@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CheckSum", "CheckSum\CheckSum.csproj", "{E2197A4B-79B2-4A58-B329-A3B2B9FFAA67}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{E2197A4B-79B2-4A58-B329-A3B2B9FFAA67}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E2197A4B-79B2-4A58-B329-A3B2B9FFAA67}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E2197A4B-79B2-4A58-B329-A3B2B9FFAA67}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E2197A4B-79B2-4A58-B329-A3B2B9FFAA67}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
