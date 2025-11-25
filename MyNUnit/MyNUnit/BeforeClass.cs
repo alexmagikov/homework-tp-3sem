@@ -1,4 +1,4 @@
-﻿// <copyright file="Before.cs" company="Alexander Kuchin">
+﻿// <copyright file="BeforeClass.cs" company="Alexander Kuchin">
 // Copyright (c) Alexander Kuchin. All rights reserved.
 // </copyright>
 
