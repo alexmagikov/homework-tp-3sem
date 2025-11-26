@@ -23,10 +23,5 @@ internal static class Program
         }
 
         var result = await MyNUnit.Run(path);
-
-        foreach (var resultString in result)
-        {
-            Console.WriteLine(resultString);
-        }
     }
 }

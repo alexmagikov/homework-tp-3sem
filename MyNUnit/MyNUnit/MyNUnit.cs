@@ -7,6 +7,7 @@ namespace MyNUnit;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Reflection;
+using RunTestsUtils;
 
 /// <summary>
 /// Test system.
@@ -107,13 +108,20 @@ public static class MyNUnit
                      {
                          var exception = e.InnerException ?? e;
 
-                         if (test.Expected is not null && exception.GetType() == test.Expected)
+                         if (test.Expected is not null)
                          {
-                             LogResult(result, $"Test {method.Name} passed");
+                             if (exception.GetType() == test.Expected)
+                             {
+                                LogResult(result, $"Test {method.Name} passed in  {stopwatch.ElapsedMilliseconds} ms");
+                             }
+                             else
+                             {
+                                 LogResult(result, $"Test {method.Name} failed - {exception.GetType().Name} != {test.Expected?.Name ?? "null"}");
+                             }
                          }
                          else
                          {
-                             LogResult(result, $"Test {method.Name} failed - {exception.GetType().Name} != {test.Expected?.Name ?? "null"}");
+                             LogResult(result, $"Test {method.Name} failed - {exception.Message}");
                          }
                      }
                      finally

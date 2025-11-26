@@ -2,7 +2,7 @@
 // Copyright (c) Alexander Kuchin. All rights reserved.
 // </copyright>
 
-namespace MyNUnit;
+namespace RunTestsUtils;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = false)]
 public class After : Attribute

@@ -2,18 +2,12 @@
 // Copyright (c) Alexander Kuchin. All rights reserved.
 // </copyright>
 
-namespace MyNUnit;
+namespace RunTestsUtils;
 
 [AttributeUsage(AttributeTargets.Method, Inherited = false)]
 public class Test : Attribute
 {
-    public Test(string ignore, Type expected)
-    {
-        Ignore = ignore;
-        Expected = expected;
-    }
+    public string? Ignore { get; set; } = null;
 
-    public string? Ignore { get; set; }
-
-    public Type? Expected { get; set; }
+    public Type? Expected { get; set; } = null;
 }
