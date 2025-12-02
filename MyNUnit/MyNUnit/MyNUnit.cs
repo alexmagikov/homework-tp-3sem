@@ -65,27 +65,43 @@ public static class MyNUnit
                  {
                      if (!method.IsStatic)
                      {
-                         LogResult(result, $"Method {method.Name} is not static");
+                         LogResult(result, $"Class - {type}, Method {method.Name} is not static");
                          continue;
                      }
 
-                     method.Invoke(null, null);
+                     try
+                     {
+                         method.Invoke(null, null);
+                         LogResult(result, $"Class - {type}, BeforeClass Method {method.Name} worked");
+                     }
+                     catch
+                     {
+                         LogResult(result, $"Class - {type}, BeforeClass Method {method.Name} failed");
+                     }
                  }
 
                  Parallel.ForEach(methodsDictionary[typeof(Test)], method =>
                  {
                      var instance = Activator.CreateInstance(type);
 
-                     foreach (var methodIn in methodsDictionary[typeof(Before)])
-                     {
-                         methodIn.Invoke(instance, null);
-                     }
-
                      var test = testAttributes[method];
                      if (test.Ignore is not null)
                      {
-                         LogResult(result, $"Test {method.Name} ignored - {test.Ignore}");
+                         LogResult(result, $"Class - {type}, {method.Name} ignored - {test.Ignore}");
                          return;
+                     }
+
+                     foreach (var methodIn in methodsDictionary[typeof(Before)])
+                     {
+                         try
+                         {
+                             methodIn.Invoke(instance, null);
+                             LogResult(result, $"Class - {type}, Before Method {method.Name} worked");
+                         }
+                         catch
+                         {
+                             LogResult(result, $"Class - {type}, Before Method {method.Name} failed");
+                         }
                      }
 
                      var stopwatch = Stopwatch.StartNew();
@@ -97,11 +113,11 @@ public static class MyNUnit
 
                          if (test.Expected is not null)
                          {
-                             LogResult(result, $"Test {method.Name} failed - {test.Expected.Name}");
+                             LogResult(result, $"Class - {type}, {method.Name} failed - {test.Expected.Name}");
                          }
                          else
                          {
-                             LogResult(result, $"Test {method.Name} passed in {stopwatch.ElapsedMilliseconds} ms");
+                             LogResult(result, $"Class - {type}, {method.Name} passed in {stopwatch.ElapsedMilliseconds} ms");
                          }
                      }
                      catch (Exception e)
@@ -112,16 +128,16 @@ public static class MyNUnit
                          {
                              if (exception.GetType() == test.Expected)
                              {
-                                LogResult(result, $"Test {method.Name} passed in  {stopwatch.ElapsedMilliseconds} ms");
+                                LogResult(result, $"Class - {type}, {method.Name} passed in  {stopwatch.ElapsedMilliseconds} ms");
                              }
                              else
                              {
-                                 LogResult(result, $"Test {method.Name} failed - {exception.GetType().Name} != {test.Expected?.Name ?? "null"}");
+                                 LogResult(result, $"Class - {type}, {method.Name} failed - {exception.GetType().Name} != {test.Expected?.Name ?? "null"}");
                              }
                          }
                          else
                          {
-                             LogResult(result, $"Test {method.Name} failed - {exception.Message}");
+                             LogResult(result, $"Class - {type}, {method.Name} failed - {exception.Message}");
                          }
                      }
                      finally
@@ -131,7 +147,15 @@ public static class MyNUnit
 
                      foreach (var methodIn in methodsDictionary[typeof(After)])
                      {
-                         methodIn.Invoke(instance, null);
+                         try
+                         {
+                             methodIn.Invoke(instance, null);
+                             LogResult(result, $"Class - {type}, After Method {method.Name} has worked");
+                         }
+                         catch
+                         {
+                             LogResult(result, $"Class - {type}, After Method {method.Name} failed");
+                         }
                      }
                  });
 
@@ -139,11 +163,19 @@ public static class MyNUnit
                  {
                      if (!method.IsStatic)
                      {
-                         LogResult(result, $"Method {method.Name} is not static");
+                         LogResult(result, $"Class - {type}, AfterClass Method {method.Name} is not static");
                          continue;
                      }
 
-                     method.Invoke(null, null);
+                     try
+                     {
+                         method.Invoke(null, null);
+                         LogResult(result, $"Class - {type}, AfterClass Method {method.Name} worked");
+                     }
+                     catch
+                     {
+                         LogResult(result, $"Class - {type}, After Method {method.Name} failed");
+                     }
                  }
             });
         }

@@ -4,21 +4,27 @@ namespace TestProjects2;
 
 public class TestClass
 {
-    [BeforeClass]
-    public static void BeforeClass()
-    {
-        Console.WriteLine("2");
-    }
-
     [Test]
     public void Test1()
     {
-        Assert.AreEqual(1, 2);
+        Thread.Sleep(100);
     }
 
-    [AfterClass]
-    public static void AfterClass()
+    [Test]
+    public void Test2()
     {
-        Console.WriteLine("3");
+        Thread.Sleep(100);
+    }
+
+    [Test]
+    public void Test3()
+    {
+        Thread.Sleep(100);
+    }
+
+    [Test]
+    public void Test4()
+    {
+        Thread.Sleep(100);
     }
 }

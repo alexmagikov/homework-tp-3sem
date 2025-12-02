@@ -5,10 +5,17 @@ namespace TestProject1;
 public class TestClass
 {
     [BeforeClass]
-    public static int BeforeClass()
+    public static void BeforeClass()
     {
-        return 32;
+        Console.WriteLine("2");
     }
+
+    [BeforeClass]
+    public void BeforeClass2()
+    {
+        Console.WriteLine("3");
+    }
+
 
     [Test]
     public void Test1()
@@ -27,6 +34,6 @@ public class TestClass
     [AfterClass]
     public static void AfterClass()
     {
-        Console.WriteLine("AfterClass");
+        Console.WriteLine("3");
     }
 }
