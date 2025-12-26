@@ -16,16 +16,16 @@ public class MatrixMultiplicationTests
     {
         var matrix1 = new int[,]
         {
-        { 1, 2, 3, 4 },
-        { 1, 2, 3, 4 },
-        { 1, 2, 3, 44 },
+            { 1, 2, 3, 4 },
+            { 1, 2, 3, 4 },
+            { 1, 2, 3, 44 },
         };
         var matrix2 = new int[,]
         {
-        { 1, 2, 3, 4, 5 },
-        { 1, 2, 3, 4, 5 },
-        { 1, 2, 3, 4, 5 },
-        { 1, 2, 3, 4, 5 },
+            { 1, 2, 3, 4, 5 },
+            { 1, 2, 3, 4, 5 },
+            { 1, 2, 3, 4, 5 },
+            { 1, 2, 3, 4, 5 },
         };
 
         var resultMatrix1 = this.parallelMultiplier.Multiply(matrix1, matrix2);
@@ -39,23 +39,23 @@ public class MatrixMultiplicationTests
     {
         var matrix1 = new int[,]
         {
-        { 1, 2, 3, 4 },
-        { 1, 2, 3, 4 },
-        { 1, 2, 3, 44 },
+            { 1, 2, 3, 4 },
+            { 1, 2, 3, 4 },
+            { 1, 2, 3, 44 },
         };
         var matrix2 = new int[,]
         {
-        { 1, 2, 3, 4, 5 },
-        { 1, 2, 3, 4, 5 },
-        { 1, 2, 3, 4, 5 },
-        { 1, 2, 3, 4, 5 },
+            { 1, 2, 3, 4, 5 },
+            { 1, 2, 3, 4, 5 },
+            { 1, 2, 3, 4, 5 },
+            { 1, 2, 3, 4, 5 },
         };
 
         var expectedResultMatrix = new int[,]
         {
-        { 10, 20, 30, 40, 50 },
-        { 10, 20, 30, 40, 50 },
-        { 50, 100, 150, 200, 250 },
+            { 10, 20, 30, 40, 50 },
+            { 10, 20, 30, 40, 50 },
+            { 50, 100, 150, 200, 250 },
         };
 
         var resultMatrix = this.sequentialMultiplier.Multiply(matrix1, matrix2);
@@ -68,23 +68,23 @@ public class MatrixMultiplicationTests
     {
         var matrix1 = new int[,]
          {
-        { 1, 2, 3, 4 },
-        { 1, 2, 3, 4 },
-        { 1, 2, 3, 44 },
+            { 1, 2, 3, 4 },
+            { 1, 2, 3, 4 },
+            { 1, 2, 3, 44 },
          };
         var matrix2 = new int[,]
         {
-        { 1, 2, 3, 4, 5 },
-        { 1, 2, 3, 4, 5 },
-        { 1, 2, 3, 4, 5 },
-        { 1, 2, 3, 4, 5 },
+            { 1, 2, 3, 4, 5 },
+            { 1, 2, 3, 4, 5 },
+            { 1, 2, 3, 4, 5 },
+            { 1, 2, 3, 4, 5 },
         };
 
         var expectedResultMatrix = new int[,]
         {
-        { 10, 20, 30, 40, 50 },
-        { 10, 20, 30, 40, 50 },
-        { 50, 100, 150, 200, 250 },
+            { 10, 20, 30, 40, 50 },
+            { 10, 20, 30, 40, 50 },
+            { 50, 100, 150, 200, 250 },
         };
         var resultMatrix = this.parallelMultiplier.Multiply(matrix1, matrix2);
 
@@ -120,8 +120,8 @@ public class MatrixMultiplicationTests
     {
         var matrix1 = new int[,]
         {
-        { 1, 2 },
-        { 3, 4 },
+            { 1, 2 },
+            { 3, 4 },
         };
         var matrix2 = new int[,] { { 1, 2, 3 } };
 
@@ -134,20 +134,20 @@ public class MatrixMultiplicationTests
     {
         var matrix = new int[,]
         {
-        { 1, 2 },
-        { 3, 4 },
+            { 1, 2 },
+            { 3, 4 },
         };
 
         var zeroMatrix = new int[,]
         {
-        { 0, 0 },
-        { 0, 0 },
+            { 0, 0 },
+            { 0, 0 },
         };
 
         var expectedResultMatrix = new int[,]
         {
-        { 0, 0 },
-        { 0, 0 },
+            { 0, 0 },
+            { 0, 0 },
         };
 
         var resultMatrix1 = this.sequentialMultiplier.Multiply(matrix, zeroMatrix);

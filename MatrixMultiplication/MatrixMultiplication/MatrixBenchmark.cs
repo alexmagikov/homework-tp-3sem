@@ -114,20 +114,18 @@ public static class MatrixBenchmark
     /// <param name="matrix">ResultMatrix.</param>
     public static void WriteFile(int[,] matrix)
     {
-        using (StreamWriter writer = new StreamWriter("resultMatrix.txt"))
+        using StreamWriter writer = new StreamWriter("resultMatrix.txt");
+        int rows = matrix.GetLength(0);
+        int cols = matrix.GetLength(1);
+
+        for (int i = 0; i < rows; i++)
         {
-            int rows = matrix.GetLength(0);
-            int cols = matrix.GetLength(1);
-
-            for (int i = 0; i < rows; i++)
+            for (int j = 0; j < cols; j++)
             {
-                for (int j = 0; j < cols; j++)
-                {
-                    writer.Write(matrix[i, j] + " ");
-                }
-
-                writer.WriteLine();
+                writer.Write(matrix[i, j] + " ");
             }
+
+            writer.WriteLine();
         }
     }
 

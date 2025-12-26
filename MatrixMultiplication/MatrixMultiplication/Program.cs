@@ -51,7 +51,7 @@ try
     Console.WriteLine("Result has written to file with name 'resultMatrix.txt' ");
 
     Console.WriteLine();
-    Console.WriteLine("Results of benchmark: ");
+    Console.WriteLine("\nResults of benchmark: ");
     MatrixBenchmark.RunBenchmark();
 }
 catch (Exception exception)
