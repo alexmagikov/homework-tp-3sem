@@ -13,7 +13,7 @@ public class SingleThreadedLazy<T>(Func<T> supplier) : ILazy<T>
     private bool isInitialized;
 
     private Func<T>? supplier = supplier ?? throw new ArgumentNullException(nameof(supplier));
-    
+
     private T? value;
 
     /// <summary>
@@ -25,7 +25,7 @@ public class SingleThreadedLazy<T>(Func<T> supplier) : ILazy<T>
     {
         if (!this.isInitialized)
         {
-            this.value = this.supplier();
+            this.value = (this.supplier ?? throw new ArgumentNullException(nameof(this.supplier)))();
             this.isInitialized = true;
             this.supplier = null;
         }

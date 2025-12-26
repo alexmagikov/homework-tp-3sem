@@ -1,49 +1,49 @@
-﻿// <copyright file="LazyTests.cs" company="AlexanderKuchin">
-// Copyright (c) AlexanderKuchin. All rights reserved.
+﻿// <copyright file="GeneralLazyTests.cs" company="AlexanderKuchin">
+// Copyright (c) PlaceholderCompany. All rights reserved.
 // </copyright>
 
 namespace Lazy.Tests;
 
 public class GeneralLazyTests
 {
-    [Test]
-    public void LazyMethodsAreEqual()
+    public static IEnumerable<TestCaseData> LazyFactories()
     {
-        var lazySingle = new SingleThreadedLazy<int>(() => 52);
-        var lazyMulti = new MultiThreadedLazy<int>(() => 52);
+        yield return new TestCaseData(
+            new Func<Func<object?>, ILazy<object?>>(s => new SingleThreadedLazy<object?>(s))).SetName("SingleThreadedLazy<object?>");
 
-        Assert.That(lazySingle.Get(), Is.EqualTo(lazyMulti.Get()));
+        yield return new TestCaseData(
+            new Func<Func<object?>, ILazy<object?>>(s => new MultiThreadedLazy<object?>(s))).SetName("MultiThreadedLazy<object?>");
     }
 
-    [Test]
-    public void LazySupplierBackNull()
+    [TestCaseSource(nameof(LazyFactories))]
+    public void LazySupplierBackNull(Func<Func<object?>, ILazy<object?>> factory)
     {
-        var lazyMulti = new MultiThreadedLazy<object?>(() => null);
-        Assert.That(lazyMulti.Get(), Is.Null);
+        var lazy = factory(() => null);
+        Assert.That(lazy.Get(), Is.Null);
     }
 
-    [Test]
-    public void LazyNormalSupplier()
+    [TestCaseSource(nameof(LazyFactories))]
+    public void LazyNormalSupplier(Func<Func<object?>, ILazy<object?>> factory)
     {
-        var lazyMulti = new MultiThreadedLazy<int>(() => 52);
-        Assert.That(lazyMulti.Get(), Is.EqualTo(52));
+        var lazy = factory(() => 52);
+        Assert.That(lazy.Get(), Is.EqualTo(52));
     }
 
-    [Test]
-    public void LazyNormalSupplierNormalBehaviour()
+    [TestCaseSource(nameof(LazyFactories))]
+    public void LazyNormalSupplierNormalBehaviour(Func<Func<object?>, ILazy<object?>> factory)
     {
         var num = 0;
-        var lazyMulti = new MultiThreadedLazy<int>(() =>
+        var lazy = factory(() =>
         {
             num++;
             return num;
         });
 
-        Assert.That(lazyMulti.Get(), Is.EqualTo(1));
-        Assert.That(lazyMulti.Get(), Is.EqualTo(1));
+        Assert.That(lazy.Get(), Is.EqualTo(1));
+        Assert.That(lazy.Get(), Is.EqualTo(1));
     }
 
-    [Test]
-    public void LazyNullSupplier()
-        => Assert.Throws<ArgumentNullException>(() => { new MultiThreadedLazy<int>(null); });
+    [TestCaseSource(nameof(LazyFactories))]
+    public void LazyNullSupplier(Func<Func<object?>, ILazy<object?>> factory)
+        => Assert.Throws<ArgumentNullException>(() => factory(null));
 }

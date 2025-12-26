@@ -31,7 +31,7 @@ public class MultiThreadedLazy<T>(Func<T> supplier) : ILazy<T>
             {
                 if (!this.isInitialized)
                 {
-                    this.value = this.supplier();
+                    this.value = (this.supplier ?? throw new ArgumentNullException(nameof(this.supplier)))();
                     this.isInitialized = true;
                     this.supplier = null;
                 }
