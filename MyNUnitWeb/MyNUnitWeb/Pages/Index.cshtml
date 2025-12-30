@@ -1,0 +1,43 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "MyNUnit";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <title></title>
+</head>
+<div class="text-center">
+    <h1 class="display-4">MyNUnit</h1>
+
+    <h1>Загрузить сборки:</h1>
+
+    <form method="post" enctype="multipart/form-data" asp-page-handler="Upload">
+        <div>
+            <input asp-for="Files" type="file" multiple />
+        </div>
+
+        <button type="submit" class="button_download">Загрузить</button>
+    </form>
+
+    @if (Model.Error != null)
+    {
+        <p>@Model.Error</p>
+    }
+
+    <form method="post" enctype="multipart/form-data" asp-page-handler="Clear">
+        <button type="submit" class="button_download">Очистить загруженные файлы</button>
+    </form>
+
+    <h1>Запустить тесты:</h1>
+
+    <form method="post" enctype="multipart/form-data" asp-page-handler="RunTests">
+        <button type="submit" class="button_download">Запустить</button>
+    </form>
+
+    @if (Model.Error != null)
+    {
+        <p>@Model.Error</p>
+    }
+</div>
