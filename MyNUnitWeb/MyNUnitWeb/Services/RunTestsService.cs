@@ -1,17 +1,25 @@
-﻿// <copyright file="RunTests.cs" company="Alexander Kuchin">
+﻿// <copyright file="RunTestsService.cs" company="Alexander Kuchin">
 // Copyright (c) Alexander Kuchin. All rights reserved.
 // </copyright>
 
-using Microsoft.EntityFrameworkCore;
-
 namespace MyNUnitWeb.Services;
 
-using MyNUnitWeb.Data;
+using Microsoft.EntityFrameworkCore;
 using MyNUnit;
+using MyNUnitWeb.Data;
 
+/// <summary>
+/// Run tests service.
+/// </summary>
+/// <param name="dbContext">Database context.</param>
 public class RunTestsService(UploadedAssemblyDbContext dbContext)
 {
-    public async Task RunAsync()
+    /// <summary>
+    /// Run tests async.
+    /// </summary>
+    /// <exception cref="Exception">Exception to running or uploading.</exception>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    public async Task<List<TestResult>> RunAsync()
     {
         if (!(await dbContext.UploadedAssemblies.AnyAsync()))
         {
@@ -19,8 +27,25 @@ public class RunTestsService(UploadedAssemblyDbContext dbContext)
         }
 
         var pathUploads = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");
-        var resultsStrings = await MyNUnit.RunAsync(pathUploads);
+        var testResults = await MyNUnit.RunAsync(pathUploads);
 
+        foreach (var testResult in testResults)
+        {
+            var testInfo = new TestInfo
+            {
+                AssemblyName = testResult.AssemblyName,
+                TestName = testResult.TestName,
+                IsPassed = testResult.IsPassed,
+                WorkTime = testResult.WorkTime,
+                ErrorMessage = testResult.ErrorMessage,
+                IgnoreReason = testResult.IgnoreReason,
+            };
 
+            dbContext.Add(testInfo);
+        }
+
+        await dbContext.SaveChangesAsync();
+
+        return testResults.ToList();
     }
 }

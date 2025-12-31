@@ -6,8 +6,17 @@ namespace MyNUnitWeb.Services;
 
 using MyNUnitWeb.Data;
 
+/// <summary>
+/// Upload service.
+/// </summary>
+/// <param name="dbContext">Database context</param>
 public class UploadService(UploadedAssemblyDbContext dbContext)
 {
+    /// <summary>
+    /// Upload libraries.
+    /// </summary>
+    /// <param name="files">Files.</param>
+    /// <returns>A <see cref="Task"/> representing the result of the asynchronous operation.</returns>
     public async Task UploadAsync(List<IFormFile> files)
     {
         var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "Uploads");

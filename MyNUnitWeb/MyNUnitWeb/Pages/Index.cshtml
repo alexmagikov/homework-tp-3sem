@@ -40,4 +40,33 @@
     {
         <p>@Model.Error</p>
     }
+    @if (Model.IsTestsRun)
+    {
+        <h1>Результаты тестирования:</h1>
+        <table>
+            <thead>
+            <tr>
+                <th>Assembly</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>WorkTime</th>
+                <th>Error</th>
+                <th>IgnoreReason</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach (var test in Model.CurrentTests!)
+            {
+                <tr>
+                    <td>@test.AssemblyName</td>
+                    <td>@test.TestName</td>
+                    <td>@test.IsPassed</td>
+                    <td>@test.WorkTime</td>
+                    <td>@test.ErrorMessage</td>
+                    <td>@test.IgnoreReason</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
 </div>
