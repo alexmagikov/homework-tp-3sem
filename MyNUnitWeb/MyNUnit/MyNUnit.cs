@@ -31,155 +31,130 @@ public static class MyNUnit
                 continue;
             }
 
-            var types = assembly.GetTypes();
-            Parallel.ForEach(types, type =>
+            try
             {
-                 var methodsDictionary = new Dictionary<Type, List<MethodInfo>>()
+                var types = assembly.GetTypes();
+
+                Parallel.ForEach(types, type =>
                 {
-                    [typeof(Before)] = [],
-                    [typeof(After)] = [],
-                    [typeof(Test)] = [],
-                    [typeof(AfterClass)] = [],
-                    [typeof(BeforeClass)] = [],
-                };
+                    try
+                    {
+                        var methodsDictionary = new Dictionary<Type, List<MethodInfo>>()
+                        {
+                            [typeof(Before)] = [],
+                            [typeof(After)] = [],
+                            [typeof(Test)] = [],
+                            [typeof(AfterClass)] = [],
+                            [typeof(BeforeClass)] = [],
+                        };
 
-                 var testAttributes = new Dictionary<MethodInfo, Test>();
+                        var testAttributes = new Dictionary<MethodInfo, Test>();
 
-                 foreach (var method in type.GetMethods())
-                 {
-                     foreach (var attribute in method.GetCustomAttributes())
-                     {
-                         if (methodsDictionary.ContainsKey(attribute.GetType()))
-                         {
-                             if (attribute.GetType() == typeof(Test))
-                             {
-                                    testAttributes.Add(method, (Test)attribute);
-                             }
+                        foreach (var method in type.GetMethods())
+                        {
+                            foreach (var attribute in method.GetCustomAttributes())
+                            {
+                                var attrType = attribute.GetType();
+                                if (methodsDictionary.ContainsKey(attrType))
+                                {
+                                    if (attrType == typeof(Test))
+                                    {
+                                        testAttributes.Add(method, (Test)attribute);
+                                    }
 
-                             methodsDictionary[attribute.GetType()].Add(method);
-                         }
-                     }
-                 }
+                                    methodsDictionary[attrType].Add(method);
+                                }
+                            }
+                        }
 
-                 foreach (var method in methodsDictionary[typeof(BeforeClass)])
-                 {
-                     if (!method.IsStatic)
-                     {
-                         throw new Exception($"Class - {type}, BeforeClass Method {method.Name} is not static");
-                     }
+                        if (methodsDictionary[typeof(Test)].Count == 0)
+                        {
+                            return;
+                        }
 
-                     method.Invoke(null, null);
-                 }
+                        foreach (var method in methodsDictionary[typeof(BeforeClass)])
+                        {
+                            if (!method.IsStatic)
+                            {
+                                continue;
+                            }
 
-                 Parallel.ForEach(methodsDictionary[typeof(Test)], method =>
-                 {
-                     var instance = Activator.CreateInstance(type);
+                            method.Invoke(null, null);
+                        }
 
-                     var test = testAttributes[method];
-                     if (test.Ignore is not null)
-                     {
-                         result.Add(new TestResult(
-                             assembly.GetName().Name!,
-                             method.Name,
-                             true,
-                             0,
-                             null,
-                             test.Ignore));
-                         return;
-                     }
+                        Parallel.ForEach(methodsDictionary[typeof(Test)], method =>
+                        {
+                            var instance = Activator.CreateInstance(type);
+                            var test = testAttributes[method];
 
-                     foreach (var methodIn in methodsDictionary[typeof(Before)])
-                     {
-                         methodIn.Invoke(instance, null);
-                     }
+                            if (test.Ignore is not null)
+                            {
+                                result.Add(new TestResult(assembly.GetName().Name!, method.Name, true, 0, null, test.Ignore));
+                                return;
+                            }
 
-                     var stopwatch = Stopwatch.StartNew();
+                            foreach (var methodIn in methodsDictionary[typeof(Before)]) methodIn.Invoke(instance, null);
 
-                     try
-                     {
-                         method.Invoke(instance, null);
-                         stopwatch.Stop();
+                            var stopwatch = Stopwatch.StartNew();
+                            try
+                            {
+                                method.Invoke(instance, null);
+                                stopwatch.Stop();
 
-                         if (test.Expected is not null)
-                         {
-                             result.Add(new TestResult(
-                                 assembly.GetName().Name!,
-                                 method.Name,
-                                 false,
-                                 0,
-                                 $"Expected {test.Expected} but  got correct test instead",
-                                 null));
-                         }
-                         else
-                         {
-                             result.Add(new TestResult(
-                                 assembly.GetName().Name!,
-                                 method.Name,
-                                 true,
-                                 stopwatch.ElapsedMilliseconds,
-                                 null,
-                                 null));
-                         }
-                     }
-                     catch (Exception e)
-                     {
-                         var exception = e.InnerException ?? e;
+                                if (test.Expected is not null)
+                                {
+                                    result.Add(new TestResult(assembly.GetName().Name!, method.Name, false, 0, $"Expected {test.Expected} but passed", null));
+                                }
+                                else
+                                {
+                                    result.Add(new TestResult(assembly.GetName().Name!, method.Name, true, stopwatch.ElapsedMilliseconds, null, null));
+                                }
+                            }
+                            catch (Exception e)
+                            {
+                                stopwatch.Stop();
+                                var exception = e.InnerException ?? e;
 
-                         if (test.Expected is not null)
-                         {
-                             if (exception.GetType() == test.Expected)
-                             {
-                                 result.Add(new TestResult(
-                                     assembly.GetName().Name!,
-                                     method.Name,
-                                     true,
-                                     stopwatch.ElapsedMilliseconds,
-                                     null,
-                                     null));
-                             }
-                             else
-                             {
-                                 result.Add(new TestResult(
-                                     assembly.GetName().Name!,
-                                     method.Name,
-                                     false,
-                                     0,
-                                     $"Expected {test.Expected} but got {test.Expected} instead",
-                                     null));
-                             }
-                         }
-                         else
-                         {
-                             result.Add(new TestResult(
-                                 assembly.GetName().Name!,
-                                 method.Name,
-                                 false,
-                                 stopwatch.ElapsedMilliseconds,
-                                 exception.Message,
-                                 null));
-                         }
-                     }
-                     finally
-                     {
-                         stopwatch.Stop();
-                     }
+                                if (test.Expected is not null && exception.GetType() == test.Expected)
+                                {
+                                    result.Add(new TestResult(assembly.GetName().Name!, method.Name, true, stopwatch.ElapsedMilliseconds, null, null));
+                                }
+                                else
+                                {
+                                    result.Add(new TestResult(assembly.GetName().Name!, method.Name, false, stopwatch.ElapsedMilliseconds, exception.Message, null));
+                                }
+                            }
 
-                     foreach (var methodIn in methodsDictionary[typeof(After)])
-                     {
-                        methodIn.Invoke(instance, null);
-                     }
-                 });
+                            foreach (var methodIn in methodsDictionary[typeof(After)]) methodIn.Invoke(instance, null);
+                        });
 
-                 foreach (var method in methodsDictionary[typeof(AfterClass)])
-                 {
-                     if (!method.IsStatic)
-                     {
-                         throw new Exception($"Class - {type}, AfterClass Method {method.Name} is not static");
-                     }
+                        foreach (var method in methodsDictionary[typeof(AfterClass)])
+                        {
+                            if (!method.IsStatic)
+                            {
+                                continue;
+                            }
 
-                     method.Invoke(null, null);
-                 }
-            });
+                            method.Invoke(null, null);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        result.Add(new TestResult(assembly.GetName().Name!, type.Name, false, 0, $"Class Error: {ex.Message}", null));
+                    }
+                });
+            }
+            catch (ReflectionTypeLoadException rtle)
+            {
+                foreach (var loaderException in rtle.LoaderExceptions)
+                {
+                    result.Add(new TestResult(assembly.GetName().Name!, "AssemblyLoad", false, 0, loaderException?.Message, null));
+                }
+            }
+            catch (Exception e)
+            {
+                result.Add(new TestResult(assembly.GetName().Name!, "AssemblyError", false, 0, e.Message, null));
+            }
         }
 
         return result;
@@ -187,24 +162,23 @@ public static class MyNUnit
 
     private static async Task<List<Assembly?>> LoadAssembliesByPath(string path)
     {
-        var files = Directory.GetFiles(path, "*.*").Where(f => f.EndsWith(".dll") || f.EndsWith(".exe"));
+        var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories)
+                             .Where(f => f.EndsWith(".dll") || f.EndsWith(".exe"));
 
         var tasks = files.Select(file => Task.Run(() =>
         {
             try
             {
-                return Assembly.LoadFrom(file);
+                var bytes = File.ReadAllBytes(file);
+                return Assembly.Load(bytes);
             }
-            catch (Exception e)
+            catch
             {
-                Console.WriteLine(e);
                 return null;
             }
         }));
 
         var assembliesArray = await Task.WhenAll(tasks);
-        var assemblies = assembliesArray.Where(a => a != null);
-
-        return assemblies.ToList();
+        return assembliesArray.Where(a => a != null).ToList();
     }
 }

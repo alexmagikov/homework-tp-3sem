@@ -7,7 +7,7 @@ namespace MyNUnitWeb.Services;
 using Microsoft.EntityFrameworkCore;
 using MyNUnitWeb.Data;
 
-public class ClearService(UploadedAssemblyDbContext dbContext)
+public class ClearService(AppDbContext dbContext)
 {
     public async Task ClearAsync()
     {

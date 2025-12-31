@@ -14,7 +14,11 @@ public class TestInfo
     /// <summary>
     /// Gets primary key.
     /// </summary>
-    public int Id { get; init; }
+    public int Id { get; set; }
+
+    public int TestId { get; set; }
+
+    public TestRun? TestRun { get; set; }
 
     /// <summary>
     /// Gets name of assembly.

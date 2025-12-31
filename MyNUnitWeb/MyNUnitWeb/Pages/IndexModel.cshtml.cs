@@ -2,6 +2,9 @@
 // Copyright (c) Alexander Kuchin. All rights reserved.
 // </copyright>
 
+using Microsoft.EntityFrameworkCore;
+using MyNUnitWeb.Data;
+
 namespace MyNUnitWeb.Pages;
 
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +21,8 @@ using MyNUnitWeb.Services;
 public class IndexModel(
     ClearService clearService,
     UploadService uploadService,
-    RunTestsService runTestsService) : PageModel
+    RunTestsService runTestsService,
+    AppDbContext dbContext) : PageModel
 {
     /// <summary>
     /// Gets or sets dlls.
@@ -30,17 +34,35 @@ public class IndexModel(
     /// Gets or sets current error.
     /// </summary>
     [TempData]
-    public string? Error { get; set; }
+    public string? UploadError { get; set; }
+
+    /// <summary>
+    /// Gets or sets current error.
+    /// </summary>
+    [TempData]
+    public string? RunTestsError { get; set; }
 
     /// <summary>
     /// Gets or sets current Tests.
     /// </summary>
-    public List<TestResult>? CurrentTests { get; set; } = [];
+    public List<TestInfo>? CurrentTests { get; set; } = [];
 
     /// <summary>
     /// Gets or sets a value indicating whether edger
     /// </summary>
     public bool IsTestsRun { get; set; } = false;
+
+    [BindProperty]
+    public int CurrentRunId { get; set; }
+
+    public List<TestRun> History { get; set; } = [];
+
+    public void OnGet()
+    {
+        this.History = dbContext.TestRuns
+            .Include(x => x.TestInfos)
+            .ToList();
+    }
 
     /// <summary>
     /// Upload dlls.
@@ -50,11 +72,13 @@ public class IndexModel(
     {
         if (this.Files.Count == 0)
         {
-            this.Error = "Нужно выбрать файлы";
+            this.UploadError = "Нужно выбрать файлы";
             return this.RedirectToPage();
         }
 
-        await uploadService.UploadAsync(this.Files);
+        var runId = await uploadService.UploadAsync(this.Files);
+
+        TempData["CurrentRunId"] = runId;
 
         return this.RedirectToPage();
     }
@@ -75,15 +99,25 @@ public class IndexModel(
     /// <returns>A <see cref="Task{TResult}"/> representing the result of the asynchronous operation.</returns>
     public async Task<IActionResult> OnPostRunTestsAsync()
     {
-        try
+        if (TempData["CurrentRunId"] is int runId)
         {
-            this.CurrentTests = await runTestsService.RunAsync();
-            IsTestsRun = true;
+            try
+            {
+                this.CurrentTests = await runTestsService.RunAsync(runId);
+                TempData.Keep("CurrentRunId");
+                IsTestsRun = true;
+            }
+            catch (Exception ex)
+            {
+                this.RunTestsError = ex.Message;
+            }
         }
-        catch (Exception ex)
+        else
         {
-            this.Error = ex.Message;
+            this.RunTestsError = "Нужно загрузить тесты";
         }
+
+        this.OnGet();
 
         return this.Page();
     }
