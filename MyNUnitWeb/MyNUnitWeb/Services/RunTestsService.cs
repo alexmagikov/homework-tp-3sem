@@ -4,7 +4,6 @@
 
 namespace MyNUnitWeb.Services;
 
-using Microsoft.EntityFrameworkCore;
 using MyNUnit;
 using MyNUnitWeb.Data;
 
@@ -16,8 +15,9 @@ public class RunTestsService(AppDbContext dbContext)
     /// <summary>
     /// Run tests async.
     /// </summary>
-    /// <exception cref="Exception">Exception to running or uploading.</exception>
-    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
+    /// <param name="testRunId">Id.</param>
+    /// <returns>List of tests.</returns>
+    /// <exception cref="Exception">Exception.</exception>
     public async Task<List<TestInfo>> RunAsync(int testRunId)
     {
         var testRun = await dbContext.TestRuns.FindAsync(testRunId);

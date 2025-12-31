@@ -2,14 +2,12 @@
 // Copyright (c) Alexander Kuchin. All rights reserved.
 // </copyright>
 
-using Microsoft.EntityFrameworkCore;
-using MyNUnitWeb.Data;
-
 namespace MyNUnitWeb.Pages;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using MyNUnit;
+using Microsoft.EntityFrameworkCore;
+using MyNUnitWeb.Data;
 using MyNUnitWeb.Services;
 
 /// <summary>
@@ -48,7 +46,7 @@ public class IndexModel(
     public List<TestInfo>? CurrentTests { get; set; } = [];
 
     /// <summary>
-    /// Gets or sets a value indicating whether edger
+    /// Gets or sets a value indicating whether edger.
     /// </summary>
     public bool IsTestsRun { get; set; } = false;
 
