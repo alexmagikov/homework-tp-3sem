@@ -2,25 +2,24 @@
 // Copyright (c) Alexander Kuchin. All rights reserved.
 // </copyright>
 
+namespace MyNUnit.Test;
+
 using System.Collections.Concurrent;
 using System.Diagnostics;
-
-namespace MyNUnit.Test;
 
 public class RunTests
 {
     private string path;
     private string pathParallelTests;
     private ConcurrentBag<string> resultForTests;
-    private ConcurrentBag<string> resultForParallelTests;
 
     [SetUp]
     public async Task Setup()
     {
         var exeDir = AppDomain.CurrentDomain.BaseDirectory;
-        var solutionDir = Path.GetFullPath(Path.Combine(exeDir, @"..\..\..\.."));
+        var solutionDir = Path.GetFullPath(Path.Combine(exeDir, "..", "..", "..", ".."));
         this.path = Path.Combine(solutionDir, "TestProjectsDll");
-        this.pathParallelTests = Path.Combine(solutionDir, "TestProjectsDll/ParallelTests");
+        this.pathParallelTests = Path.Combine(solutionDir, "TestProjectsDll", "ParallelTests");
 
         this.resultForTests = await MyNUnit.Run(this.path);
     }
@@ -62,7 +61,7 @@ public class RunTests
     public async Task RunShouldWorkingInParallel()
     {
         var sw = Stopwatch.StartNew();
-        this.resultForParallelTests = await MyNUnit.Run(this.pathParallelTests);
+        await MyNUnit.Run(this.pathParallelTests);
         sw.Stop();
 
         Assert.That(sw.ElapsedMilliseconds, Is.LessThan(300));
