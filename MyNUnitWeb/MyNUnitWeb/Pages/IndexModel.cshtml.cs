@@ -11,7 +11,7 @@ using MyNUnitWeb.Data;
 using MyNUnitWeb.Services;
 
 /// <summary>
-/// Index model code.
+/// The service to upload tests and run them.
 /// </summary>
 /// <param name="clearService">ClearService.</param>
 /// <param name="uploadService">UploadService.</param>
