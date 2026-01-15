@@ -1,0 +1,116 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "MyNUnit";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <title></title>
+</head>
+
+<div class="container" style="padding-bottom: 50px;">
+
+    <div class="text-center">
+        <h1 class="display-4">MyNUnit</h1>
+    </div>
+
+    <h3>Загрузить сборки:</h3>
+    <form method="post" enctype="multipart/form-data" asp-page-handler="Upload" style="margin-bottom: 20px;">
+        <input asp-for="Files" type="file" multiple style="margin-bottom: 10px;" />
+        <br/>
+        <button type="submit" class="button-download">Загрузить</button>
+    </form>
+
+    @if (Model.UploadError != null)
+    {
+        <p class="alert-error">@Model.UploadError</p>
+    }
+
+    <form method="post" enctype="multipart/form-data" asp-page-handler="Clear">
+        <button type="submit" class="button-download" style="background-color: #dc3545;">Очистить загруженные файлы</button>
+    </form>
+
+    <hr />
+
+    <h3>Запустить тесты:</h3>
+    <form method="post" enctype="multipart/form-data" asp-page-handler="RunTests">
+        <button type="submit" class="button-download" style="background-color: #28a745;">Запустить</button>
+    </form>
+
+    @if (Model.RunTestsError != null)
+    {
+        <p class="alert-error">@Model.RunTestsError</p>
+    }
+
+    @if (Model.IsTestsRun)
+    {
+        <h2 style="margin-top: 30px;">Результаты текущего запуска:</h2>
+        <table class="styled-table">
+            <thead>
+                <tr>
+                    <th>Assembly</th>
+                    <th>Name</th>
+                    <th>Status</th>
+                    <th>Time (ms)</th>
+                    <th>Error</th>
+                    <th>Reason</th>
+                </tr>
+            </thead>
+            <tbody>
+            @foreach (var test in Model.CurrentTests!)
+            {
+                <tr>
+                    <td>@test.AssemblyName</td>
+                    <td>@test.TestName</td>
+                    <td style="@(test.IsPassed ? "color: green; font-weight: bold;" : "color: red; font-weight: bold;")">
+                        @(test.IsPassed ? "Passed" : "Failed")
+                    </td>
+                    <td>@test.WorkTime</td>
+                    <td>@test.ErrorMessage</td>
+                    <td>@test.IgnoreReason</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+
+    <h2 style="margin-top: 30px;">История тестирования:</h2>
+
+    <table class="styled-table">
+        <thead>
+            <tr>
+                <th>Assembly</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Time (ms)</th>
+                <th>Error</th>
+                <th>Reason</th>
+            </tr>
+        </thead>
+        @foreach (var runTest in Model.History)
+        {
+            <tbody>
+                <tr class="run-separator">
+                    <td colspan="6">
+                        Запуск ID: @runTest.Id
+                    </td>
+                </tr>
+
+                @foreach (var test in runTest.TestInfos)
+                {
+                    <tr>
+                        <td>@test.AssemblyName</td>
+                        <td>@test.TestName</td>
+                        <td style="@(test.IsPassed ? "color: green;" : "color: red;")">
+                            @(test.IsPassed ? "Passed" : "Failed")
+                        </td>
+                        <td>@test.WorkTime</td>
+                        <td>@test.ErrorMessage</td>
+                        <td>@test.IgnoreReason</td>
+                    </tr>
+                }
+            </tbody>
+        }
+    </table>
+</div>
